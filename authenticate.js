@@ -1,5 +1,5 @@
 const passport = require('passport');
-const LocalStrategy = require('require-local').Strategy;
+const LocalStrategy = require('passport-local').Strategy;
 const User = require('./models/user');
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
@@ -38,3 +38,13 @@ exports.jwtPassport = passport.use(
 );
 
 exports.verifyUser = passport.authenticate('jwt', {session: false});
+
+exports.verifyAdmin = (req, res, next) => {
+    if (req.user.admin) {
+        return next();
+    } else {
+        const err = new Error('Not an Admin');
+        res.setStatus = 403;
+        return next(err);
+    }
+};
